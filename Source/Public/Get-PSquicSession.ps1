@@ -106,7 +106,7 @@ function Get-PSquicSession {
                 $uri = "https://api.quic.nz/v1/session?service=$ServiceId"
                 $response = Invoke-PSquicRestMethod -Uri $uri -Method 'GET'
                 
-                return $response
+                Write-Output $response
             }
             catch {
                 Write-Error "Failed to retrieve session for service '$ServiceId': $($_.Exception.Message)"
