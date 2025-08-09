@@ -4,20 +4,27 @@ function Get-PSquicSession {
         Retrieves session information for a specific service.
     
     .DESCRIPTION
-        This function queries the Quic API to retrieve session data for a specific service.
-        Session details include connection status, active IP addresses, session type, and 
-        various network configuration details. Session data is cached for 5 minutes on the 
-        server side to reduce load. Supports pipeline input for processing multiple services.
+        This function queries the Quic API to retrieve session data for a specific service,
+        or for all available services if no ServiceId is specified. Session details include 
+        connection status, active IP addresses, session type, and various network configuration 
+        details. Session data is cached for 5 minutes on the server side to reduce load. 
+        Supports pipeline input for processing multiple services.
     
     .PARAMETER ServiceId
-        The service identifier to retrieve session information for. This must be a service 
-        that the authenticated user is authorized to access. Use Get-PSquicServices to get
-        a list of available service identifiers.
+        Optional. The service identifier to retrieve session information for. This must be a 
+        service that the authenticated user is authorized to access. If not specified, the 
+        function will automatically retrieve and process all available services. Use 
+        Get-PSquicServices to get a list of available service identifiers.
     
     .EXAMPLE
         PS> Get-PSquicSession -ServiceId "service123"
         
         Retrieves session information for service "service123".
+    
+    .EXAMPLE
+        PS> Get-PSquicSession
+        
+        Retrieves session information for all authorized services automatically.
     
     .EXAMPLE
         PS> Get-PSquicServices | Get-PSquicSession
@@ -33,9 +40,9 @@ function Get-PSquicSession {
         Retrieves session information and displays key properties.
     
     .EXAMPLE
-        PS> Get-PSquicServices | Get-PSquicSession | Where-Object { $_.status -eq 'connected' }
+        PS> Get-PSquicSession | Where-Object { $_.status -eq 'connected' }
         
-        Gets all connected sessions using pipeline and filtering.
+        Gets all connected sessions and filters for only connected ones.
     
     .INPUTS
         System.String
@@ -55,6 +62,7 @@ function Get-PSquicSession {
         - Requires an active connection established with Connect-PSquic
         - Session data is cached server-side for 5 minutes
         - Supports both single service queries and pipeline processing
+        - When no ServiceId is specified, automatically processes all available services
         - The ServiceIds alias is provided for backwards compatibility
     
     .LINK
@@ -68,21 +76,60 @@ function Get-PSquicSession {
     #>
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+        [Parameter(Mandatory = $false, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
         [Alias('ServiceIds')]
         [string]$ServiceId
     )
 
-    process {
-        try {
-            $uri = "https://api.quic.nz/v1/session?service=$ServiceId"
-            $response = Invoke-PSquicRestMethod -Uri $uri -Method 'GET'
-            
-            return $response
+    begin {
+        # If no ServiceId is provided via parameter and we're not in pipeline mode,
+        # get all available services
+        $allServices = @()
+        if (-not $PSBoundParameters.ContainsKey('ServiceId') -and -not $MyInvocation.ExpectingInput) {
+            try {
+                Write-Verbose "No ServiceId specified, retrieving all available services"
+                $allServices = Get-PSquicServices
+                Write-Verbose "Found $($allServices.Count) services to process"
+            }
+            catch {
+                Write-Error "Failed to retrieve services list: $($_.Exception.Message)"
+                throw
+            }
+            # No initialization needed here; all logic handled in process block.
         }
-        catch {
-            Write-Error "Failed to retrieve session for service '$ServiceId': $($_.Exception.Message)"
-            throw
+    }
+    process {
+        # If we have a specific ServiceId (from parameter or pipeline), process it
+        if ($ServiceId) {
+            try {
+                Write-Verbose "Processing ServiceId: $ServiceId"
+                $uri = "https://api.quic.nz/v1/session?service=$ServiceId"
+                $response = Invoke-PSquicRestMethod -Uri $uri -Method 'GET'
+                
+                Write-Output $response
+            }
+            catch {
+                Write-Error "Failed to retrieve session for service '$ServiceId': $($_.Exception.Message)"
+                throw
+            }
+        }
+        # Otherwise, process all services we found in the begin block
+        elseif ($allServices.Count -gt 0) {
+            foreach ($service in $allServices) {
+                try {
+                    Write-Verbose "Processing service: $service"
+                    $uri = "https://api.quic.nz/v1/session?service=$service"
+                    $response = Invoke-PSquicRestMethod -Uri $uri -Method 'GET'
+                    
+                    # Output each session individually so they can be processed in pipeline
+                    Write-Output $response
+                }
+                catch {
+                    Write-Error "Failed to retrieve session for service '$service': $($_.Exception.Message)"
+                    # Continue processing other services even if one fails
+                    continue
+                }
+            }
         }
     }
 }
