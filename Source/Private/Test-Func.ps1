@@ -1,0 +1,1 @@
+function Test-Func { "Hello" }
