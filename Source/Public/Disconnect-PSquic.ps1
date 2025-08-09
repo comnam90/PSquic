@@ -6,7 +6,8 @@ function Disconnect-PSquic {
     .DESCRIPTION
         This function clears the stored API key that was set using Connect-PSquic.
         After calling this function, you will need to call Connect-PSquic again
-        before using other PSquic functions.
+        before using other PSquic functions. This function is idempotent and can
+        be called safely multiple times.
     
     .EXAMPLE
         PS> Disconnect-PSquic
@@ -21,8 +22,35 @@ function Disconnect-PSquic {
         
         Complete workflow showing connection, usage, and disconnection.
     
+    .EXAMPLE
+        PS> Disconnect-PSquic -Verbose
+        
+        Disconnects with verbose output showing the disconnection status.
+    
+    .INPUTS
+        None
+        You cannot pipe objects to this function.
+    
     .OUTPUTS
         None
+        This function does not generate any output.
+    
+    .NOTES
+        - This function is idempotent and can be called multiple times safely.
+        - Always call this function when finished with the API to clear credentials.
+        - The function will provide verbose output when using the -Verbose parameter.
+    
+    .LINK
+        Connect-PSquic
+    
+    .LINK
+        Get-PSquicServices
+    
+    .LINK
+        Get-PSquicSession
+    
+    .LINK
+        Get-PSquicWeatherMap
     #>
     [CmdletBinding()]
     param()
