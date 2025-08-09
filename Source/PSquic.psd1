@@ -10,6 +10,5 @@
     RequiredModules = @()
     FunctionsToExport = @('Connect-PSquic', 'Disconnect-PSquic', 'Get-PSquicServices', 'Get-PSquicSession', 'Get-PSquicWeatherMap')
     CmdletsToExport = @()
-    VariablesToExport = '*'
     VariablesToExport = @()
     AliasesToExport = @()
