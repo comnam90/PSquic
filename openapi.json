@@ -1,0 +1,533 @@
+{
+  "swaggerDoc": {
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Quic API",
+      "version": "1.0.0",
+      "description": "API for Quic network services including session data and weather data. Rate limits are enforced to prevent abuse (120 requests per minute), and all endpoints require a valid API key for access. \n\n To raise an issue with the API, please use the problem reporting feature within your Quic portal.",
+      "contact": {
+        "name": "Quic Network"
+      }
+    },
+    "servers": [
+      {
+        "url": "https://api.quic.nz/v1/",
+        "description": "Production"
+      }
+    ],
+    "components": {
+      "securitySchemes": {
+        "ApiKeyAuth": {
+          "type": "apiKey",
+          "in": "header",
+          "name": "X-API-Key",
+          "description": "API Key for authentication"
+        }
+      },
+      "schemas": {
+        "Session": {
+          "type": "object",
+          "properties": {
+            "service": {
+              "type": "object",
+              "properties": {
+                "staticIPv4Prefix": {
+                  "type": "string",
+                  "description": "Static IPv4 prefix for the service",
+                  "example": ""
+                },
+                "staticIPv6Prefix": {
+                  "type": "string",
+                  "description": "Static IPv6 prefix for the service",
+                  "example": ""
+                },
+                "staticIPv4PrefixLength": {
+                  "type": ["integer", "null"],
+                  "description": "Length of static IPv4 prefix",
+                  "example": null
+                },
+                "staticIPv6PrefixLength": {
+                  "type": ["integer", "null"],
+                  "description": "Length of static IPv6 prefix",
+                  "example": null
+                },
+                "username": {
+                  "type": "string",
+                  "description": "Service username",
+                  "example": "username"
+                },
+                "password": {
+                  "type": "string",
+                  "description": "Service password",
+                  "example": "password"
+                },
+                "datacap": {
+                  "type": "number",
+                  "description": "Data cap limit",
+                  "example": 0
+                },
+                "mac": {
+                  "type": "string",
+                  "description": "MAC address",
+                  "example": ""
+                },
+                "asid": {
+                  "type": "string",
+                  "description": "AS identifier",
+                  "example": "1631234567"
+                },
+                "lfc": {
+                  "type": "string",
+                  "description": "Local fiber company",
+                  "example": "Chorus"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Service status",
+                  "example": "active"
+                },
+                "entity": {
+                  "type": "string",
+                  "description": "Service entity",
+                  "example": "Quic"
+                },
+                "entityUniqueId": {
+                  "type": "string",
+                  "description": "Unique identifier for the service entity",
+                  "example": "106511"
+                },
+                "routes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Service routes",
+                  "example": []
+                },
+                "createdAt": {
+                  "type": "object",
+                  "properties": {
+                    "$date": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2024-04-28T19:26:20.668Z"
+                    }
+                  }
+                },
+                "updatedAt": {
+                  "type": "object",
+                  "properties": {
+                    "$date": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2024-04-28T19:26:20.668Z"
+                    }
+                  }
+                }
+              }
+            },
+            "status": {
+              "type": "string",
+              "description": "Session connection status",
+              "example": "connected"
+            },
+            "sessionType": {
+              "type": "string",
+              "description": "Type of session (e.g., PPPoE, DHCP)",
+              "example": "DHCP"
+            },
+            "activeIPv4Prefix": {
+              "type": "string",
+              "description": "Active IPv4 address",
+              "example": "x.x.x.x"
+            },
+            "activeIPv4PrefixLength": {
+              "type": "integer",
+              "description": "Length of active IPv4 prefix",
+              "example": 32
+            },
+            "activeIPv6Prefix": {
+              "type": "string",
+              "description": "Active IPv6 prefix",
+              "example": "x:x:x:x::"
+            },
+            "activeIPv6PrefixLength": {
+              "type": "integer",
+              "description": "Length of active IPv6 prefix",
+              "example": 56
+            },
+            "lastRadiusUpdate": {
+              "type": "object",
+              "properties": {
+                "$date": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2025-08-04T00:48:40.547Z"
+                }
+              }
+            },
+            "sessionExpiresAt": {
+              "type": "object",
+              "properties": {
+                "$date": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2025-08-04T01:08:40.547Z"
+                }
+              }
+            },
+            "pppPayload": {
+              "type": "object",
+              "description": "PPP session payload data",
+              "properties": {
+                "packetSourceAddress": {
+                  "type": "string",
+                  "example": "x.x.x.x"
+                },
+                "nasPortType": {
+                  "type": "string",
+                  "example": "Ethernet"
+                },
+                "nasPort": {
+                  "type": "string",
+                  "example": "150"
+                },
+                "nasPortId": {
+                  "type": "string",
+                  "example": "Quic"
+                },
+                "serviceType": {
+                  "type": "string",
+                  "example": "Framed-User"
+                },
+                "linkLayerAddress": {
+                  "type": "string",
+                  "example": "1:d7:2:c2:5f:e2:cb"
+                },
+                "callingStationId": {
+                  "type": "string",
+                  "example": "1:d7:2:c2:5f:e2:cb"
+                },
+                "calledStationId": {
+                  "type": "string",
+                  "example": "Quic"
+                },
+                "delegatedIPv6Prefix": {
+                  "type": "string",
+                  "example": ""
+                },
+                "nasIdentifier": {
+                  "type": "string",
+                  "example": "bng-name"
+                },
+                "nasIPAddress": {
+                  "type": "string",
+                  "example": "x.x.x.x"
+                },
+                "adslAgentRemoteId": {
+                  "type": "string",
+                  "example": "LFCSPECIFIC"
+                },
+                "adslAgentCircuitId": {
+                  "type": "string",
+                  "example": "ELL-POLT08 eth 1/1/03/15/5/1/1:10"
+                },
+                "eventTimestamp": {
+                  "type": "string",
+                  "example": ""
+                },
+                "acctStatusType": {
+                  "type": "string",
+                  "example": ""
+                },
+                "acctSessionId": {
+                  "type": "string",
+                  "example": ""
+                },
+                "acctAuthentic": {
+                  "type": "string",
+                  "example": ""
+                },
+                "acctDelayTime": {
+                  "type": "number",
+                  "example": 0
+                },
+                "postAuthResult": {
+                  "type": "string",
+                  "example": ""
+                },
+                "acctInputOctets": {
+                  "type": "string",
+                  "example": ""
+                },
+                "userName": {
+                  "type": "string",
+                  "example": "D4:01:C3:4F:E6:CB "
+                },
+                "userPassword": {
+                  "type": "string",
+                  "example": ""
+                },
+                "acctOutputOctets": {
+                  "type": "string",
+                  "example": ""
+                },
+                "acctUniqueSessionId": {
+                  "type": "string",
+                  "example": ""
+                }
+              }
+            },
+            "createdAt": {
+              "type": "object",
+              "properties": {
+                "$date": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2024-11-13T12:24:06.354Z"
+                }
+              }
+            },
+            "updatedAt": {
+              "type": "object",
+              "properties": {
+                "$date": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2025-08-04T00:48:40.547Z"
+                }
+              }
+            }
+          }
+        },
+        "ServicesResponse": {
+          "type": "object",
+          "properties": {
+            "serviceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Array of service identifiers the user is authorized to access",
+              "example": ["service123", "service456", "service789"]
+            }
+          }
+        },
+        "Error": {
+          "type": "object",
+          "properties": {
+            "error": {
+              "type": "string",
+              "description": "Error message"
+            },
+            "success": {
+              "type": "boolean",
+              "description": "Request success status",
+              "default": false
+            },
+            "message": {
+              "type": "string",
+              "description": "Detailed error message"
+            }
+          }
+        }
+      }
+    },
+    "security": [
+      {
+        "ApiKeyAuth": []
+      }
+    ],
+    "paths": {
+      "/services": {
+        "get": {
+          "summary": "List authorized services",
+          "description": "Retrieve the list of service identifiers that the authenticated user is authorized to access. Requires valid API key authentication.",
+          "tags": ["Services"],
+          "security": [
+            {
+              "ApiKeyAuth": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Services retrieved successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ServicesResponse"
+                  },
+                  "example": {
+                    "serviceIds": ["service123", "service456", "service789"]
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden - invalid or missing authentication",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  },
+                  "example": {
+                    "error": "Forbidden: Service not authorized"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  },
+                  "example": {
+                    "success": false,
+                    "message": "Error fetching services: Internal Server Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/session": {
+        "get": {
+          "summary": "Retrieve session information",
+          "description": "Get session data for a specific service. Session details are cached for 5 minutes to reduce load. Requires valid API key and service identifier.",
+          "tags": ["Sessions"],
+          "security": [
+            {
+              "ApiKeyAuth": []
+            }
+          ],
+          "parameters": [
+            {
+              "in": "query",
+              "name": "service",
+              "required": true,
+              "schema": {
+                "type": "string"
+              },
+              "description": "Service identifier to retrieve session for",
+              "example": "service123"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Session data retrieved successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Session"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request - missing service parameter",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  },
+                  "example": {
+                    "error": "Service query parameter is required"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Forbidden - service not authorized for this API key",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  },
+                  "example": {
+                    "error": "Forbidden: Service not authorized"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Session not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  },
+                  "example": {
+                    "error": "Session not found"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/weathermap": {
+        "get": {
+          "summary": "Fetch the Quic weather map",
+          "description": "Downloads the latest weather map from Quic and serves it. The map is cached for 5 minutes to reduce load. Requires valid API key.",
+          "tags": ["Weather"],
+          "security": [
+            {
+              "ApiKeyAuth": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Weather map fetched successfully",
+              "content": {
+                "image/jpeg": {
+                  "schema": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal server error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  },
+                  "example": {
+                    "error": "Failed to fetch weather map",
+                    "success": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "tags": [
+      {
+        "name": "Sessions",
+        "description": "Fetch your session data, including active IPs and connection status."
+      },
+      {
+        "name": "Weather Map",
+        "description": "Quic weather map, for your viewing pleasure."
+      }
+    ]
+  }
+}
