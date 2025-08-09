@@ -11,5 +11,5 @@
     FunctionsToExport = @('Connect-PSquic', 'Disconnect-PSquic', 'Get-PSquicServices', 'Get-PSquicSession', 'Get-PSquicWeatherMap')
     CmdletsToExport = @()
     VariablesToExport = '*'
-    AliasesToExport = '*'
-}
+    VariablesToExport = @()
+    AliasesToExport = @()
