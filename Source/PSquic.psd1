@@ -8,7 +8,7 @@
     Description = 'A brief description of the PSquic module.'
     PowerShellVersion = '5.1'
     RequiredModules = @()
-    FunctionsToExport = @()
+    FunctionsToExport = @('Connect-PSquic')
     CmdletsToExport = @()
     VariablesToExport = '*'
     AliasesToExport = '*'
