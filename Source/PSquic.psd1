@@ -5,10 +5,10 @@
     Author = 'Ben Thomas'
     CompanyName = 'GarageCloud'
     Copyright = '(c) 2025 Ben Thomas. All rights reserved.'
-    Description = 'A brief description of the PSquic module.'
+    Description = 'PowerShell module for interacting with the Quic API to retrieve session data, services, and weather maps.'
     PowerShellVersion = '5.1'
     RequiredModules = @()
-    FunctionsToExport = @('Connect-PSquic')
+    FunctionsToExport = @('Connect-PSquic', 'Disconnect-PSquic', 'Get-PSquicServices', 'Get-PSquicSession', 'Get-PSquicWeatherMap')
     CmdletsToExport = @()
     VariablesToExport = '*'
     AliasesToExport = '*'

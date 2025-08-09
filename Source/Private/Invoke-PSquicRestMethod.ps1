@@ -16,7 +16,7 @@ function Invoke-PSquicRestMethod {
     }
 
     $headers = @{
-        "Authorization" = "Bearer $script:ApiKey"
+        "X-API-Key" = $script:ApiKey
     }
 
     $params = @{

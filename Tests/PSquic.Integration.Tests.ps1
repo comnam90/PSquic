@@ -73,6 +73,21 @@ Describe 'PSquic Integration Tests' {
             $result | Should -HaveCount 2
             $result[0].service.username | Should -Be 'testuser'
         }
+
+        It 'should support complete connect-use-disconnect workflow' {
+            # Connect
+            Connect-PSquic -ApiKey 'test-api-key'
+            
+            # Use the API
+            $services = Get-PSquicServices
+            $services | Should -HaveCount 2
+            
+            # Disconnect
+            Disconnect-PSquic
+            
+            # Verify disconnection
+            { Get-PSquicServices } | Should -Throw "*API key not set*"
+        }
     }
 
     Context 'Error handling' {
