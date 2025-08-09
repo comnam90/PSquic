@@ -86,5 +86,55 @@ Describe 'Get-PSquicSession' {
                 $Uri -eq 'https://api.quic.nz/v1/session?service=service123'
             }
         }
+
+        Context 'When no ServiceId is provided' {
+            BeforeEach {
+                # Mock Get-PSquicServices to return test services
+                Mock Get-PSquicServices -ModuleName 'PSquic' {
+                    return @('service123', 'service456', 'service789')
+                }
+            }
+
+            It 'should automatically get all services and return all sessions' {
+                $result = Get-PSquicSession
+                
+                # Should call Get-PSquicServices once
+                Should -Invoke Get-PSquicServices -ModuleName 'PSquic' -Times 1
+                
+                # Should call Invoke-PSquicRestMethod for each service
+                Should -Invoke Invoke-PSquicRestMethod -ModuleName 'PSquic' -Times 3 -ParameterFilter {
+                    $Uri -like 'https://api.quic.nz/v1/session?service=*' -and $Method -eq 'GET'
+                }
+            }
+
+            It 'should handle errors from individual services gracefully' {
+                # Mock to fail on second service but succeed on others
+                Mock Invoke-PSquicRestMethod -ModuleName 'PSquic' {
+                    param($Uri)
+                    if ($Uri -like '*service456*') {
+                        throw "HTTP 404: Service not found"
+                    }
+                    return @{
+                        service = @{ username = 'testuser'; status = 'active' }
+                        status = 'connected'
+                        sessionType = 'DHCP'
+                    }
+                } 
+
+                # Should not throw, but continue processing other services
+                { Get-PSquicSession } | Should -Not -Throw
+                
+                # Should still process all services
+                Should -Invoke Invoke-PSquicRestMethod -ModuleName 'PSquic' -Times 3
+            }
+
+            It 'should throw if Get-PSquicServices fails' {
+                Mock Get-PSquicServices -ModuleName 'PSquic' {
+                    throw "Failed to retrieve services"
+                }
+
+                { Get-PSquicSession } | Should -Throw "*Failed to retrieve services*"
+            }
+        }
     }
 }
