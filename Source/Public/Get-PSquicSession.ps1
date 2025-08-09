@@ -95,9 +95,9 @@ function Get-PSquicSession {
                 Write-Error "Failed to retrieve services list: $($_.Exception.Message)"
                 throw
             }
-        # No initialization needed here; all logic handled in process block.
+            # No initialization needed here; all logic handled in process block.
+        }
     }
-
     process {
         # If we have a specific ServiceId (from parameter or pipeline), process it
         if ($ServiceId) {
