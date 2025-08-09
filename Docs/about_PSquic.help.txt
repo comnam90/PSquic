@@ -1,3 +1,0 @@
-# Documentation for PSquic
-
-# This file will contain the help documentation for the module.
