@@ -3,7 +3,7 @@ BeforeAll {
     Import-Module "$PSScriptRoot/../../Source/PSquic.psd1" -Force
 }
 
-Describe 'Invoke-PSquicRestMethod' {
+Describe 'Invoke-PSquicRestMethod' -Tag 'Unit', 'Fast' {
     Context 'when API key is not set' {
         BeforeEach {
             # Clear the ApiKey variable before each test in the module scope
@@ -34,7 +34,7 @@ Describe 'Invoke-PSquicRestMethod' {
                 Invoke-PSquicRestMethod -Uri 'https://api.quic.nz/v1/test'
             }
             
-            Should -Invoke Invoke-RestMethod -ModuleName 'PSquic' -Times 1 -ParameterFilter {
+            Should -Invoke Invoke-RestMethod -ModuleName 'PSquic' -Exactly 1 -ParameterFilter {
                 $Uri -eq 'https://api.quic.nz/v1/test' -and
                 $Method -eq 'GET' -and
                 $Headers.'X-API-Key' -eq 'test-api-key'
@@ -49,7 +49,7 @@ Describe 'Invoke-PSquicRestMethod' {
                 Invoke-PSquicRestMethod -Uri 'https://api.quic.nz/v1/test' -Method 'POST' -Body $body
             } -ArgumentList $testBody
             
-            Should -Invoke Invoke-RestMethod -ModuleName 'PSquic' -Times 1 -ParameterFilter {
+            Should -Invoke Invoke-RestMethod -ModuleName 'PSquic' -Exactly 1 -ParameterFilter {
                 $Uri -eq 'https://api.quic.nz/v1/test' -and
                 $Method -eq 'POST' -and
                 $Headers.'X-API-Key' -eq 'test-api-key' -and

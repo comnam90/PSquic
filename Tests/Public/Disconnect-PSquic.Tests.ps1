@@ -3,7 +3,7 @@ BeforeAll {
     Import-Module "$PSScriptRoot/../../Source/PSquic.psd1" -Force
 }
 
-Describe 'Disconnect-PSquic' {
+Describe 'Disconnect-PSquic' -Tag 'Unit', 'Fast' {
     Context 'When API key is set' {
         BeforeEach {
             # Set up an API key

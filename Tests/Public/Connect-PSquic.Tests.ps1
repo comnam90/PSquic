@@ -3,7 +3,7 @@ BeforeAll {
     Import-Module "$PSScriptRoot/../../Source/PSquic.psd1" -Force
 }
 
-Describe 'Connect-PSquic' {
+Describe 'Connect-PSquic' -Tag 'Unit', 'Fast' {
     It 'should set the ApiKey script variable' {
         Connect-PSquic -ApiKey 'test-key'
         

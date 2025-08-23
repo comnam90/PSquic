@@ -3,7 +3,7 @@ BeforeAll {
     Import-Module "$PSScriptRoot/../../Source/PSquic.psd1" -Force
 }
 
-Describe 'Get-PSquicWeatherMap' {
+Describe 'Get-PSquicWeatherMap' -Tag 'Unit', 'Fast' {
     BeforeEach {
         # Mock the private function
         Mock Invoke-PSquicRestMethod -ModuleName 'PSquic' {
@@ -62,7 +62,7 @@ Describe 'Get-PSquicWeatherMap' {
             It 'should call the correct API endpoint' {
                 Get-PSquicWeatherMap
                 
-                Should -Invoke Invoke-PSquicRestMethod -ModuleName 'PSquic' -Times 1 -ParameterFilter {
+                Should -Invoke Invoke-PSquicRestMethod -ModuleName 'PSquic' -Exactly 1 -ParameterFilter {
                     $Uri -eq 'https://api.quic.nz/v1/weathermap' -and $Method -eq 'GET'
                 }
             }
@@ -84,7 +84,7 @@ Describe 'Get-PSquicWeatherMap' {
             It 'should call Invoke-RestMethod directly with OutFile parameter' {
                 Get-PSquicWeatherMap -OutFile '/tmp/weathermap.jpg'
                 
-                Should -Invoke Invoke-RestMethod -ModuleName 'PSquic' -Times 1 -ParameterFilter {
+                Should -Invoke Invoke-RestMethod -ModuleName 'PSquic' -Exactly 1 -ParameterFilter {
                     $Uri -eq 'https://api.quic.nz/v1/weathermap' -and 
                     $Method -eq 'GET' -and
                     $OutFile -eq '/tmp/weathermap.jpg' -and
@@ -112,7 +112,7 @@ Describe 'Get-PSquicWeatherMap' {
 
                 Get-PSquicWeatherMap -OutFile '/tmp/weathermap.jpg'
                 
-                Should -Invoke New-Item -ModuleName 'PSquic' -Times 1 -ParameterFilter {
+                Should -Invoke New-Item -ModuleName 'PSquic' -Exactly 1 -ParameterFilter {
                     $Path -eq '/tmp' -and $ItemType -eq 'Directory' -and $Force -eq $true
                 }
             }

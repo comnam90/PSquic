@@ -38,7 +38,7 @@ BeforeAll {
     }
 }
 
-Describe 'PSquic Integration Tests' {
+Describe 'PSquic Integration Tests' -Tag 'Integration', 'Slow' {
     Context 'Full workflow integration' {        
         It 'should allow complete workflow from connection to data retrieval' {
             # Connect to the API
@@ -59,7 +59,7 @@ Describe 'PSquic Integration Tests' {
             $weatherData | Should -BeOfType [byte]
             
             # Verify all API calls were made with correct authentication
-            Should -Invoke Invoke-RestMethod -ModuleName 'PSquic' -Times 4 -ParameterFilter {
+            Should -Invoke Invoke-RestMethod -ModuleName 'PSquic' -Exactly 4 -ParameterFilter {
                 $Headers.'X-API-Key' -eq 'test-api-key'
             }
         }

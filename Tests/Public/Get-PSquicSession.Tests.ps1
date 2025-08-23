@@ -3,7 +3,7 @@ BeforeAll {
     Import-Module "$PSScriptRoot/../../Source/PSquic.psd1" -Force
 }
 
-Describe 'Get-PSquicSession' {
+Describe 'Get-PSquicSession' -Tag 'Unit', 'Fast' {
     BeforeEach {
         # Mock the private function with sample session data
         Mock Invoke-PSquicRestMethod -ModuleName 'PSquic' {
@@ -50,7 +50,7 @@ Describe 'Get-PSquicSession' {
         It 'should call the correct API endpoint with service parameter' {
             Get-PSquicSession -ServiceId 'service123'
             
-            Should -Invoke Invoke-PSquicRestMethod -ModuleName 'PSquic' -Times 1 -ParameterFilter {
+            Should -Invoke Invoke-PSquicRestMethod -ModuleName 'PSquic' -Exactly 1 -ParameterFilter {
                 $Uri -eq 'https://api.quic.nz/v1/session?service=service123' -and $Method -eq 'GET'
             }
         }
@@ -74,7 +74,7 @@ Describe 'Get-PSquicSession' {
         It 'should accept pipeline input' {
             @('service123', 'service456') | Get-PSquicSession
             
-            Should -Invoke Invoke-PSquicRestMethod -ModuleName 'PSquic' -Times 2
+            Should -Invoke Invoke-PSquicRestMethod -ModuleName 'PSquic' -Exactly 2
         }
 
         It 'should accept pipeline input with ServiceIds property' {
@@ -82,7 +82,7 @@ Describe 'Get-PSquicSession' {
             
             $services | Get-PSquicSession
             
-            Should -Invoke Invoke-PSquicRestMethod -ModuleName 'PSquic' -Times 1 -ParameterFilter {
+            Should -Invoke Invoke-PSquicRestMethod -ModuleName 'PSquic' -Exactly 1 -ParameterFilter {
                 $Uri -eq 'https://api.quic.nz/v1/session?service=service123'
             }
         }
@@ -99,10 +99,10 @@ Describe 'Get-PSquicSession' {
                 $result = Get-PSquicSession
                 
                 # Should call Get-PSquicServices once
-                Should -Invoke Get-PSquicServices -ModuleName 'PSquic' -Times 1
+                Should -Invoke Get-PSquicServices -ModuleName 'PSquic' -Exactly 1
                 
                 # Should call Invoke-PSquicRestMethod for each service
-                Should -Invoke Invoke-PSquicRestMethod -ModuleName 'PSquic' -Times 3 -ParameterFilter {
+                Should -Invoke Invoke-PSquicRestMethod -ModuleName 'PSquic' -Exactly 3 -ParameterFilter {
                     $Uri -like 'https://api.quic.nz/v1/session?service=*' -and $Method -eq 'GET'
                 }
             }
@@ -125,7 +125,7 @@ Describe 'Get-PSquicSession' {
                 { Get-PSquicSession } | Should -Not -Throw
                 
                 # Should still process all services
-                Should -Invoke Invoke-PSquicRestMethod -ModuleName 'PSquic' -Times 3
+                Should -Invoke Invoke-PSquicRestMethod -ModuleName 'PSquic' -Exactly 3
             }
 
             It 'should throw if Get-PSquicServices fails' {

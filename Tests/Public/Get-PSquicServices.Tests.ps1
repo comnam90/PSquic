@@ -3,7 +3,7 @@ BeforeAll {
     Import-Module "$PSScriptRoot/../../Source/PSquic.psd1" -Force
 }
 
-Describe 'Get-PSquicServices' {
+Describe 'Get-PSquicServices' -Tag 'Unit', 'Fast' {
     BeforeEach {
         # Mock the private function
         Mock Invoke-PSquicRestMethod -ModuleName 'PSquic' {
@@ -39,7 +39,7 @@ Describe 'Get-PSquicServices' {
         It 'should call the correct API endpoint' {
             Get-PSquicServices
             
-            Should -Invoke Invoke-PSquicRestMethod -ModuleName 'PSquic' -Times 1 -ParameterFilter {
+            Should -Invoke Invoke-PSquicRestMethod -ModuleName 'PSquic' -Exactly 1 -ParameterFilter {
                 $Uri -eq 'https://api.quic.nz/v1/services' -and $Method -eq 'GET'
             }
         }
